@@ -1,0 +1,2 @@
+[global.databases.info]
+url = "mysql://root:12345678@localhost/info"
