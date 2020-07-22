@@ -1,17 +1,14 @@
 use diesel::prelude::*;
-use chrono::NaiveDateTime;
 use rocket_contrib::json::{Json, JsonValue};
 use crate::DbConn;
 use crate::schema::pipe_users;
 
 #[derive(Serialize, Deserialize, Queryable)]
 pub struct User {
-    pub id: i32,
-    pub user_name: String,
-    pub user_password: String,
+    id: i32,
+    user_name: String,
+    user_password: String,
     user_email: String,
-    user_registered_time: NaiveDateTime,
-    user_recently_login_time: NaiveDateTime,
 }
 
 #[derive(Serialize, Deserialize, Queryable)]
@@ -21,8 +18,6 @@ pub struct NewUser {
     user_name: String,
     user_password: String,
     user_email: String,
-    user_registered_time: NaiveDateTime,
-    user_recently_login_time: NaiveDateTime,
 }
 
 #[get("/read")]
@@ -40,8 +35,8 @@ pub fn create(conn: DbConn, new_user: Json<NewUser>) -> Result<JsonValue, JsonVa
     diesel::insert_into(pipe_users::table)
         .values(&new_user.into_inner())
         .execute(&conn.0)
-        .map_err(|_| {
-            json!({"status": "err"})
+        .map_err(|e| {
+            json!({"status": e.to_string()})
         })
         .map(|_| {
             json!({"status": "ok"})
@@ -53,8 +48,8 @@ pub fn delete(conn: DbConn, id: i32) -> Result<JsonValue, JsonValue> {
     use crate::schema::pipe_users::dsl::pipe_users;
     diesel::delete(pipe_users.find(id))
         .execute(&conn.0)
-        .map_err(|_| {
-            json!({"status": "err"})
+        .map_err(|e| {
+            json!({"status": e.to_string()})
         })
         .map(|_| {
             json!({"status": "ok"})
@@ -67,8 +62,8 @@ pub fn update(conn: DbConn, id: i32, new_user: Json<NewUser>) -> Result<JsonValu
     diesel::update(pipe_users.find(id))
         .set(&new_user.into_inner())
         .execute(&conn.0)
-        .map_err(|_| {
-            json!({"status": "err"})
+        .map_err(|e| {
+            json!({"status": e.to_string()})
         })
         .map(|_| {
             json!({"status": "ok"})
