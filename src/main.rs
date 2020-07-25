@@ -6,16 +6,19 @@
 #[macro_use] extern crate serde_derive;
 
 mod schema;
-mod db;
+mod api;
 
 use rocket::Config;
 use rocket::config::Environment;
 use std::collections::HashMap;
 use rocket::config::Value;
-use crate::db::user::static_rocket_route_info_for_read;
-use crate::db::user::static_rocket_route_info_for_create;
-use crate::db::user::static_rocket_route_info_for_update;
-use crate::db::user::static_rocket_route_info_for_delete;
+use crate::api::user::static_rocket_route_info_for_user_read;
+use crate::api::user::static_rocket_route_info_for_user_create;
+use crate::api::user::static_rocket_route_info_for_user_update;
+use crate::api::user::static_rocket_route_info_for_user_delete;
+
+use crate::api::active::static_rocket_route_info_for_code_create;
+use crate::api::active::static_rocket_route_info_for_code_delete;
 
 #[database("info")]
 pub struct DbConn(diesel::MysqlConnection);
@@ -35,7 +38,8 @@ fn rocket_db_api() -> rocket::Rocket {
 
     rocket::custom(config)
         .attach(DbConn::fairing())
-        .mount("/db/user", routes![read, create, update, delete])
+        .mount("/api/user", routes![user_read, user_create, user_update, user_delete])
+        .mount("/api/user/active_code", routes![code_create, code_delete])
 }
 
 fn main() {

@@ -4,24 +4,17 @@ use crate::DbConn;
 use crate::schema::pipe_users;
 
 #[derive(Serialize, Deserialize, Queryable)]
-pub struct User {
-    id: i32,
-    user_name: String,
-    user_password: String,
-    user_email: String,
-}
-
-#[derive(Serialize, Deserialize, Queryable)]
 #[derive(Insertable, AsChangeset)]
-#[table_name="pipe_users"]
-pub struct NewUser {
+#[table_name = "pipe_users"]
+pub struct User {
     user_name: String,
     user_password: String,
     user_email: String,
+    active: bool,
 }
 
 #[get("/read")]
-pub fn read(conn: DbConn) -> Result<Json<Vec<User>>, String> {
+pub fn user_read(conn: DbConn) -> Result<Json<Vec<User>>, String> {
     use crate::schema::pipe_users::dsl::pipe_users;
     pipe_users.load(&conn.0).map_err(|err| -> String {
         println!("Error querying: {:?}", err);
@@ -30,7 +23,7 @@ pub fn read(conn: DbConn) -> Result<Json<Vec<User>>, String> {
 }
 
 #[post("/create", format = "json", data = "<new_user>")]
-pub fn create(conn: DbConn, new_user: Json<NewUser>) -> Result<JsonValue, JsonValue> {
+pub fn user_create(conn: DbConn, new_user: Json<User>) -> Result<JsonValue, JsonValue> {
     use crate::schema::pipe_users;
     diesel::insert_into(pipe_users::table)
         .values(&new_user.into_inner())
@@ -43,10 +36,10 @@ pub fn create(conn: DbConn, new_user: Json<NewUser>) -> Result<JsonValue, JsonVa
         })
 }
 
-#[delete("/delete/<id>")]
-pub fn delete(conn: DbConn, id: i32) -> Result<JsonValue, JsonValue> {
+#[delete("/delete/<user_name>")]
+pub fn user_delete(conn: DbConn, user_name: String) -> Result<JsonValue, JsonValue> {
     use crate::schema::pipe_users::dsl::pipe_users;
-    diesel::delete(pipe_users.find(id))
+    diesel::delete(pipe_users.find(user_name))
         .execute(&conn.0)
         .map_err(|e| {
             json!({"status": e.to_string()})
@@ -56,10 +49,10 @@ pub fn delete(conn: DbConn, id: i32) -> Result<JsonValue, JsonValue> {
         })
 }
 
-#[put("/update/<id>", data = "<new_user>")]
-pub fn update(conn: DbConn, id: i32, new_user: Json<NewUser>) -> Result<JsonValue, JsonValue> {
+#[put("/update/<user_name>", data = "<new_user>")]
+pub fn user_update(conn: DbConn, user_name: String, new_user: Json<User>) -> Result<JsonValue, JsonValue> {
     use crate::schema::pipe_users::dsl::pipe_users;
-    diesel::update(pipe_users.find(id))
+    diesel::update(pipe_users.find(user_name))
         .set(&new_user.into_inner())
         .execute(&conn.0)
         .map_err(|e| {
