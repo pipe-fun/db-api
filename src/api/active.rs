@@ -11,6 +11,15 @@ pub struct ActiveCode {
     owner: String,
 }
 
+#[get("/read")]
+pub fn code_read(conn: DbConn) -> Result<Json<Vec<ActiveCode>>, String> {
+    use crate::schema::active_code::dsl::active_code;
+    active_code.load(&conn.0).map_err(|err| -> String {
+        println!("Error querying: {:?}", err);
+        "Error querying".into()
+    }).map(Json)
+}
+
 #[post("/create", format = "json", data = "<new_code>")]
 pub fn code_create(conn: DbConn, new_code: Json<ActiveCode>) -> Result<JsonValue, JsonValue> {
     use crate::schema::active_code;

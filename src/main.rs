@@ -17,6 +17,7 @@ use crate::api::user::static_rocket_route_info_for_user_create;
 use crate::api::user::static_rocket_route_info_for_user_update;
 use crate::api::user::static_rocket_route_info_for_user_delete;
 
+use crate::api::active::static_rocket_route_info_for_code_read;
 use crate::api::active::static_rocket_route_info_for_code_create;
 use crate::api::active::static_rocket_route_info_for_code_delete;
 
@@ -39,7 +40,7 @@ fn rocket_db_api() -> rocket::Rocket {
     rocket::custom(config)
         .attach(DbConn::fairing())
         .mount("/api/user", routes![user_read, user_create, user_update, user_delete])
-        .mount("/api/user/active_code", routes![code_create, code_delete])
+        .mount("/api/user/active_code", routes![code_read, code_create, code_delete])
 }
 
 fn main() {
