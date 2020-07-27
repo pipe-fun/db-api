@@ -14,3 +14,9 @@ table! {
     }
 }
 
+table! {
+    check_code (code) {
+        code -> Integer,
+        owner -> Varchar,
+    }
+}

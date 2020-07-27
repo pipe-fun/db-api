@@ -12,7 +12,7 @@ pub struct ActiveCode {
 }
 
 #[get("/read")]
-pub fn code_read(conn: DbConn) -> Result<Json<Vec<ActiveCode>>, String> {
+pub fn active_code_read(conn: DbConn) -> Result<Json<Vec<ActiveCode>>, String> {
     use crate::schema::active_code::dsl::active_code;
     active_code.load(&conn.0).map_err(|err| -> String {
         println!("Error querying: {:?}", err);
@@ -21,7 +21,7 @@ pub fn code_read(conn: DbConn) -> Result<Json<Vec<ActiveCode>>, String> {
 }
 
 #[post("/create", format = "json", data = "<new_code>")]
-pub fn code_create(conn: DbConn, new_code: Json<ActiveCode>) -> Result<JsonValue, JsonValue> {
+pub fn active_code_create(conn: DbConn, new_code: Json<ActiveCode>) -> Result<JsonValue, JsonValue> {
     use crate::schema::active_code;
     diesel::insert_into(active_code::table)
         .values(&new_code.into_inner())
@@ -35,7 +35,7 @@ pub fn code_create(conn: DbConn, new_code: Json<ActiveCode>) -> Result<JsonValue
 }
 
 #[delete("/delete/<code>")]
-pub fn code_delete(conn: DbConn, code: String) -> Result<JsonValue, JsonValue> {
+pub fn active_code_delete(conn: DbConn, code: String) -> Result<JsonValue, JsonValue> {
     use crate::schema::active_code::dsl::active_code;
     diesel::delete(active_code.find(code))
         .execute(&conn.0)

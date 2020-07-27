@@ -17,9 +17,13 @@ use crate::api::user::static_rocket_route_info_for_user_create;
 use crate::api::user::static_rocket_route_info_for_user_update;
 use crate::api::user::static_rocket_route_info_for_user_delete;
 
-use crate::api::active::static_rocket_route_info_for_code_read;
-use crate::api::active::static_rocket_route_info_for_code_create;
-use crate::api::active::static_rocket_route_info_for_code_delete;
+use crate::api::active_code::static_rocket_route_info_for_active_code_read;
+use crate::api::active_code::static_rocket_route_info_for_active_code_create;
+use crate::api::active_code::static_rocket_route_info_for_active_code_delete;
+
+use crate::api::check_code::static_rocket_route_info_for_check_code_read;
+use crate::api::check_code::static_rocket_route_info_for_check_code_create;
+use crate::api::check_code::static_rocket_route_info_for_check_code_delete;
 
 #[database("info")]
 pub struct DbConn(diesel::MysqlConnection);
@@ -39,8 +43,12 @@ fn rocket_db_api() -> rocket::Rocket {
 
     rocket::custom(config)
         .attach(DbConn::fairing())
-        .mount("/api/user", routes![user_read, user_create, user_update, user_delete])
-        .mount("/api/user/active_code", routes![code_read, code_create, code_delete])
+        .mount("/api/user"
+               , routes![user_read, user_create, user_update, user_delete])
+        .mount("/api/user/active_code"
+               , routes![active_code_read, active_code_create, active_code_delete])
+        .mount("/api/user/check_code"
+               , routes![check_code_read, check_code_create, check_code_delete])
 }
 
 fn main() {
