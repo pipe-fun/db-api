@@ -2,3 +2,8 @@
 rustflags = [
   "-L", "/usr/local/mysql/lib",
 ]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
+  "-L", "/usr/local/mysql/lib",
+]
