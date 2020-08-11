@@ -18,6 +18,7 @@ features = ["serde"]
 
 [dependencies.diesel]
 version = "1.4"
+features = ["chrono"]
 
 [dependencies.rocket_contrib]
 version = "0.4.5"

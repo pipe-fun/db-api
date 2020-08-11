@@ -20,3 +20,20 @@ table! {
         owner -> Varchar,
     }
 }
+
+table! {
+    device (token) {
+        owner -> Varchar,
+        token -> Varchar,
+    }
+}
+
+table! {
+    task (id) {
+        id -> Integer,
+        command -> Varchar,
+        execute_time -> Time,
+        device_token -> Varchar,
+        active -> Bool,
+    }
+}

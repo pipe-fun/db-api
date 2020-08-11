@@ -25,6 +25,17 @@ use crate::api::check_code::static_rocket_route_info_for_check_code_read;
 use crate::api::check_code::static_rocket_route_info_for_check_code_create;
 use crate::api::check_code::static_rocket_route_info_for_check_code_delete;
 
+use crate::api::task::static_rocket_route_info_for_task_read;
+use crate::api::task::static_rocket_route_info_for_task_create;
+use crate::api::task::static_rocket_route_info_for_task_update;
+use crate::api::task::static_rocket_route_info_for_task_delete;
+
+use crate::api::device::static_rocket_route_info_for_device_read;
+use crate::api::device::static_rocket_route_info_for_device_create;
+use crate::api::device::static_rocket_route_info_for_device_update;
+use crate::api::device::static_rocket_route_info_for_device_delete;
+
+
 #[database("info")]
 pub struct DbConn(diesel::MysqlConnection);
 
@@ -49,6 +60,10 @@ fn rocket_db_api() -> rocket::Rocket {
                , routes![active_code_read, active_code_create, active_code_delete])
         .mount("/api/user/check_code"
                , routes![check_code_read, check_code_create, check_code_delete])
+        .mount("/api/task"
+               , routes![task_read, task_create, task_update, task_delete])
+        .mount("/api/device"
+               , routes![device_read, device_create, device_update, device_delete])
 }
 
 fn main() {
