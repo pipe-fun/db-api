@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use chrono::NaiveTime;
+use chrono::{NaiveTime, NaiveDateTime};
 use rocket_contrib::json::{Json, JsonValue};
 use crate::DbConn;
 use crate::schema::task;
@@ -7,6 +7,10 @@ use crate::schema::task;
 #[derive(Serialize, Deserialize, Queryable)]
 pub struct Task {
     id: i32,
+    name: String,
+    succeed_count: i32,
+    failed_count: i32,
+    last_executed: NaiveDateTime,
     command: String,
     execute_time: NaiveTime,
     device_token: String,
@@ -17,6 +21,10 @@ pub struct Task {
 #[derive(Insertable, AsChangeset)]
 #[table_name = "task"]
 pub struct NewTask {
+    name: String,
+    succeed_count: i32,
+    failed_count: i32,
+    last_executed: NaiveDateTime,
     command: String,
     execute_time: NaiveTime,
     device_token: String,

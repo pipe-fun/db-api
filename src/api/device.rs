@@ -8,6 +8,7 @@ use crate::schema::device;
 #[table_name = "device"]
 pub struct Device {
     token: String,
+    name: String,
     owner: String
 }
 

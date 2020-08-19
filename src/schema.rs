@@ -24,13 +24,18 @@ table! {
 table! {
     device (token) {
         token -> Varchar,
-	owner -> Varchar,
+        name -> Varchar,
+	    owner -> Varchar,
     }
 }
 
 table! {
     task (id) {
         id -> Integer,
+        name -> Varchar,
+        succeed_count -> Integer,
+        failed_count -> Integer,
+        last_executed -> Datetime,
         command -> Varchar,
         execute_time -> Time,
         device_token -> Varchar,
