@@ -36,6 +36,7 @@ table! {
         succeed_count -> Integer,
         failed_count -> Integer,
         last_executed -> Datetime,
+        owner -> Varchar,
         command -> Varchar,
         execute_time -> Time,
         device_token -> Varchar,
