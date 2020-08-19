@@ -7,8 +7,8 @@ use crate::schema::device;
 #[derive(Insertable, AsChangeset)]
 #[table_name = "device"]
 pub struct Device {
-    owner: String,
     token: String,
+    owner: String
 }
 
 #[get("/read")]

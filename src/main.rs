@@ -12,10 +12,10 @@ use rocket::Config;
 use rocket::config::Environment;
 use std::collections::HashMap;
 use rocket::config::Value;
-use crate::api::user::static_rocket_route_info_for_user_read;
-use crate::api::user::static_rocket_route_info_for_user_create;
-use crate::api::user::static_rocket_route_info_for_user_update;
-use crate::api::user::static_rocket_route_info_for_user_delete;
+use crate::api::users::static_rocket_route_info_for_user_read;
+use crate::api::users::static_rocket_route_info_for_user_create;
+use crate::api::users::static_rocket_route_info_for_user_update;
+use crate::api::users::static_rocket_route_info_for_user_delete;
 
 use crate::api::active_code::static_rocket_route_info_for_active_code_read;
 use crate::api::active_code::static_rocket_route_info_for_active_code_create;
@@ -43,7 +43,7 @@ fn rocket_db_api() -> rocket::Rocket {
     let mut database_config = HashMap::new();
     let mut databases = HashMap::new();
 
-    database_config.insert("url", Value::from("mysql://root:12345678@localhost/info"));
+    database_config.insert("url", Value::from("mysql://root:12345678@127.0.0.1/pipe"));
     databases.insert("info", Value::from(database_config));
 
     let config = Config::build(Environment::Development)

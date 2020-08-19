@@ -1,5 +1,5 @@
 table! {
-    pipe_users (user_name) {
+    users (user_name) {
         user_name -> Varchar,
         user_password -> Varchar,
         user_email -> Varchar,
@@ -23,8 +23,8 @@ table! {
 
 table! {
     device (token) {
-        owner -> Varchar,
         token -> Varchar,
+	owner -> Varchar,
     }
 }
 
