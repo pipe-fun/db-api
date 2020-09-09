@@ -7,7 +7,7 @@ use crate::schema::check_code;
 #[derive(Insertable, AsChangeset)]
 #[table_name = "check_code"]
 pub struct CheckCode {
-    code: i32,
+    code: String,
     owner: String,
 }
 
@@ -35,7 +35,7 @@ pub fn check_code_create(conn: DbConn, new_code: Json<CheckCode>) -> Result<Json
 }
 
 #[delete("/delete/<code>")]
-pub fn check_code_delete(conn: DbConn, code: i32) -> Result<JsonValue, JsonValue> {
+pub fn check_code_delete(conn: DbConn, code: String) -> Result<JsonValue, JsonValue> {
     use crate::schema::check_code::dsl::check_code;
     diesel::delete(check_code.find(code))
         .execute(&conn.0)

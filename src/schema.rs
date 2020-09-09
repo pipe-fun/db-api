@@ -16,7 +16,7 @@ table! {
 
 table! {
     check_code (code) {
-        code -> Integer,
+        code -> Varchar,
         owner -> Varchar,
     }
 }
