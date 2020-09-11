@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS users (
-    uasr_name TEXT NOT NULL PRIMARY KEY,
+    user_name TEXT NOT NULL PRIMARY KEY,
     user_password TEXT NOT NULL,
-    user_email TEXT NOT NULL
+    user_email TEXT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE TABLE IF NOT EXISTS task (
     id INT NOT NULL PRIMARY KEY,
