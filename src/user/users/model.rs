@@ -8,20 +8,18 @@ use crate::curd::{CRUD, Status};
 
 #[derive(Serialize, Deserialize, FromRow)]
 pub struct User {
-    pub user_name: String,
-    pub user_password: String,
-    pub user_email: String,
-    pub active: bool,
+    user_name: String,
+    user_password: String,
+    user_email: String,
+    active: bool,
 }
 
-// implementation of Actix Responder for Todo struct so we can return Todo from action handler
 impl Responder for User {
     type Error = Error;
     type Future = Ready<Result<HttpResponse, Error>>;
 
     fn respond_to(self, _req: &HttpRequest) -> Self::Future {
         let body = serde_json::to_string(&self).unwrap();
-        // create response and set content type
         ready(Ok(
             HttpResponse::Ok()
                 .content_type("application/json")

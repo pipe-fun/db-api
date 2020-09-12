@@ -7,12 +7,12 @@ use async_trait::async_trait;
 use crate::curd::{CRUD, Status};
 
 #[derive(Serialize, Deserialize, FromRow)]
-pub struct ActiveCode {
+pub struct CheckCode {
     code: String,
     owner: String,
 }
 
-impl Responder for ActiveCode {
+impl Responder for CheckCode {
     type Error = Error;
     type Future = Ready<Result<HttpResponse, Error>>;
 
@@ -28,13 +28,13 @@ impl Responder for ActiveCode {
 
 #[async_trait]
 #[allow(unused_variables)]
-impl CRUD for ActiveCode {
+impl CRUD for CheckCode {
     type KeyType = String;
-    type RequestType = ActiveCode;
+    type RequestType = CheckCode;
 
     async fn create(r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        sqlx::query("INSERT INTO active_code (code, owner) VALUES ($1, $2)")
+        sqlx::query("INSERT INTO check_code (code, owner) VALUES ($1, $2)")
             .bind(&r.code)
             .bind(&r.owner)
             .execute(&mut tx)
@@ -50,14 +50,14 @@ impl CRUD for ActiveCode {
 
         let recs = sqlx::query!(
             r#"
-                SELECT * FROM active_code
+                SELECT * FROM check_code
             "#
         )
             .fetch_all(pool)
             .await?;
 
         for rec in recs {
-            users.push(ActiveCode {
+            users.push(CheckCode {
                 code: rec.code,
                 owner: rec.owner
             });
@@ -69,14 +69,14 @@ impl CRUD for ActiveCode {
     async fn read_by_key(key: Self::KeyType, pool: &PgPool) -> Result<Self> {
         let rec = sqlx::query!(
                 r#"
-                    SELECT * FROM active_code WHERE code = $1
+                    SELECT * FROM check_code WHERE code = $1
                 "#,
                 &key
             )
             .fetch_one(&*pool)
             .await?;
 
-        Ok(ActiveCode {
+        Ok(CheckCode {
             code: rec.code,
             owner: rec.owner
         })
@@ -88,7 +88,7 @@ impl CRUD for ActiveCode {
 
     async fn delete(key: Self::KeyType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        let rows = sqlx::query("DELETE FROM active_code WHERE code = $1")
+        let rows = sqlx::query("DELETE FROM check_code WHERE code = $1")
             .bind(&key)
             .execute(&mut tx)
             .await?;
