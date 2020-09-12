@@ -7,15 +7,12 @@ use async_trait::async_trait;
 use crate::curd::{CRUD, Status};
 
 #[derive(Serialize, Deserialize, FromRow)]
-pub struct User {
-    pub user_name: String,
-    pub user_password: String,
-    pub user_email: String,
-    pub active: bool,
+pub struct ActiveCode {
+    code: String,
+    owner: String,
 }
 
-// implementation of Actix Responder for Todo struct so we can return Todo from action handler
-impl Responder for User {
+impl Responder for ActiveCode {
     type Error = Error;
     type Future = Ready<Result<HttpResponse, Error>>;
 
@@ -31,17 +28,16 @@ impl Responder for User {
 }
 
 #[async_trait]
-impl CRUD for User {
+#[allow(unused_variables)]
+impl CRUD for ActiveCode {
     type KeyType = String;
-    type RequestType = User;
+    type RequestType = ActiveCode;
 
     async fn create(r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        sqlx::query("INSERT INTO users (user_name, user_password, user_email, active) VALUES ($1, $2, $3, $4)")
-            .bind(&r.user_name)
-            .bind(&r.user_password)
-            .bind(&r.user_email)
-            .bind(r.active)
+        sqlx::query("INSERT INTO active_code (code, owner) VALUES ($1, $2)")
+            .bind(&r.code)
+            .bind(&r.owner)
             .execute(&mut tx)
             .await?;
 
@@ -55,18 +51,16 @@ impl CRUD for User {
 
         let recs = sqlx::query!(
             r#"
-                SELECT * FROM users
+                SELECT * FROM active_code
             "#
         )
             .fetch_all(pool)
             .await?;
 
         for rec in recs {
-            users.push(User {
-                user_name: rec.user_name,
-                user_password: rec.user_password,
-                user_email: rec.user_email,
-                active: rec.active,
+            users.push(ActiveCode {
+                code: rec.code,
+                owner: rec.owner
             });
         }
 
@@ -76,38 +70,26 @@ impl CRUD for User {
     async fn read_by_key(key: Self::KeyType, pool: &PgPool) -> Result<Self> {
         let rec = sqlx::query!(
                 r#"
-                    SELECT * FROM users WHERE user_name = $1
+                    SELECT * FROM active_code WHERE code = $1
                 "#,
                 &key
             )
             .fetch_one(&*pool)
             .await?;
 
-        Ok(User {
-            user_name: rec.user_name,
-            user_password: rec.user_password,
-            user_email: rec.user_email,
-            active: rec.active,
+        Ok(ActiveCode {
+            code: rec.code,
+            owner: rec.owner
         })
     }
 
     async fn update(key: Self::KeyType, r: Self::RequestType, pool: &PgPool) -> Result<Status> {
-        let mut tx = pool.begin().await?;
-        let rows = sqlx::query("UPDATE users SET user_password = $1, active = $2 WHERE user_name = $3")
-            .bind(&r.user_password)
-            .bind(r.active)
-            .bind(&key)
-            .execute(&mut tx)
-            .await?;
-
-        tx.commit().await?;
-        let s = if rows > 0 { Status::ok() } else { Status::err("not found".into()) };
-        Ok(s)
+        unimplemented!()
     }
 
     async fn delete(key: Self::KeyType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        let rows = sqlx::query("DELETE FROM users WHERE user_name = $1")
+        let rows = sqlx::query("DELETE FROM active_code WHERE code = $1")
             .bind(&key)
             .execute(&mut tx)
             .await?;

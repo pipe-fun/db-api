@@ -25,6 +25,7 @@ async fn main() -> Result<()> {
         App::new()
             .data(db_pool.clone())
             .configure(user::users::routes::init)
+            .configure(user::active_code::routes::init)
     });
 
     server = match listenfd.take_tcp_listener(0)? {

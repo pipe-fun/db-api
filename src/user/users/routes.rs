@@ -1,11 +1,11 @@
 use actix_web::{delete, get, post, put, web, Responder};
 use sqlx::PgPool;
 use crate::user::users::model::User;
-use crate::curd::{CURD, deal_result};
+use crate::curd::{CRUD, deal_result};
 
 #[post("/user/create")]
-async fn create(new_user: web::Json<User>, db_pool: web::Data<PgPool>) -> impl Responder {
-    let result = User::create(new_user.into_inner(), db_pool.get_ref()).await;
+async fn create(new: web::Json<User>, db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = User::create(new.into_inner(), db_pool.get_ref()).await;
     deal_result(result)
 }
 
@@ -23,7 +23,7 @@ async fn read_by_name(name: web::Path<String>, db_pool: web::Data<PgPool>) -> im
 
 #[put("/user/update/{name}")]
 async fn update(name: web::Path<String>, new: web::Json<User>, db_pool: web::Data<PgPool>) -> impl Responder {
-    let result = User::update(name.into_inner(), new.into_inner(),db_pool.get_ref()).await;
+    let result = User::update(name.into_inner(), new.into_inner(), db_pool.get_ref()).await;
     deal_result(result)
 }
 
