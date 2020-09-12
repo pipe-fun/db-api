@@ -21,4 +21,8 @@ async-trait = "0.1.40"
 
 [dependencies.sqlx]
 version = "0.3"
-features = [ "postgres" ]
+features = ["postgres", "chrono"]
+
+[dependencies.chrono]
+version = "0.4"
+features = ["serde"]

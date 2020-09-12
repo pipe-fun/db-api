@@ -29,6 +29,7 @@ async fn main() -> Result<()> {
             .configure(user::active_code::routes::init)
             .configure(user::check_code::routes::init)
             .configure(console::device::routes::init)
+            .configure(console::task::routes::init)
     });
 
     server = match listenfd.take_tcp_listener(0)? {
