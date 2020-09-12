@@ -89,7 +89,7 @@ impl CRUD for Device {
     async fn update(key: Self::KeyType, r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
         let rows = sqlx::query("UPDATE device SET name = $1 WHERE token = $2")
-            .bind(&r.token)
+            .bind(&r.name)
             .bind(&key)
             .execute(&mut tx)
             .await?;
