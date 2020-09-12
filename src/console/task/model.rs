@@ -131,7 +131,7 @@ impl CRUD for Task {
 
     async fn update(key: Self::KeyType, r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        let rows = sqlx::query(r#"UPDATE users SET
+        let rows = sqlx::query(r#"UPDATE task SET
         name = $1, succeed_count = $2, failed_count = $3, last_executed = $4,
         command = $5, execute_time = $6, device_token = $7, active = $8 WHERE id = $9"#)
             .bind(&r.name)
