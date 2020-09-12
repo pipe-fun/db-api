@@ -1,7 +1,7 @@
 use actix_web::{delete, get, post, web, Responder};
 use sqlx::PgPool;
 use crate::user::check_code::model::CheckCode;
-use crate::curd::{CRUD, deal_result};
+use crate::crud::{CRUD, deal_result};
 
 #[post("/check_code/create")]
 async fn create(new: web::Json<CheckCode>, db_pool: web::Data<PgPool>) -> impl Responder {

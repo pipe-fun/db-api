@@ -7,14 +7,13 @@ use async_trait::async_trait;
 use crate::crud::{CRUD, Status};
 
 #[derive(Serialize, Deserialize, FromRow)]
-pub struct User {
-    user_name: String,
-    user_password: String,
-    user_email: String,
-    active: bool,
+pub struct Device {
+    token: String,
+    name: String,
+    owner: String
 }
 
-impl Responder for User {
+impl Responder for Device {
     type Error = Error;
     type Future = Ready<Result<HttpResponse, Error>>;
 
@@ -29,17 +28,17 @@ impl Responder for User {
 }
 
 #[async_trait]
-impl CRUD for User {
+#[allow(unused_variables)]
+impl CRUD for Device {
     type KeyType = String;
-    type RequestType = User;
+    type RequestType = Device;
 
     async fn create(r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        sqlx::query("INSERT INTO users (user_name, user_password, user_email, active) VALUES ($1, $2, $3, $4)")
-            .bind(&r.user_name)
-            .bind(&r.user_password)
-            .bind(&r.user_email)
-            .bind(r.active)
+        sqlx::query("INSERT INTO device (token, name, owner) VALUES ($1, $2, $3)")
+            .bind(&r.token)
+            .bind(&r.name)
+            .bind(&r.owner)
             .execute(&mut tx)
             .await?;
 
@@ -53,18 +52,17 @@ impl CRUD for User {
 
         let recs = sqlx::query!(
             r#"
-                SELECT * FROM users
+                SELECT * FROM device
             "#
         )
             .fetch_all(pool)
             .await?;
 
         for rec in recs {
-            data.push(User {
-                user_name: rec.user_name,
-                user_password: rec.user_password,
-                user_email: rec.user_email,
-                active: rec.active,
+            data.push(Device {
+                token: rec.token,
+                name: rec.name,
+                owner: rec.owner,
             });
         }
 
@@ -74,26 +72,24 @@ impl CRUD for User {
     async fn read_by_key(key: Self::KeyType, pool: &PgPool) -> Result<Self> {
         let rec = sqlx::query!(
                 r#"
-                    SELECT * FROM users WHERE user_name = $1
+                    SELECT * FROM device WHERE token = $1
                 "#,
                 &key
             )
             .fetch_one(&*pool)
             .await?;
 
-        Ok(User {
-            user_name: rec.user_name,
-            user_password: rec.user_password,
-            user_email: rec.user_email,
-            active: rec.active,
+        Ok(Device {
+            token: rec.token,
+            name: rec.name,
+            owner: rec.owner,
         })
     }
 
     async fn update(key: Self::KeyType, r: Self::RequestType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        let rows = sqlx::query("UPDATE users SET user_password = $1, active = $2 WHERE user_name = $3")
-            .bind(&r.user_password)
-            .bind(r.active)
+        let rows = sqlx::query("UPDATE users SET name = $1 WHERE token = $2")
+            .bind(&r.token)
             .bind(&key)
             .execute(&mut tx)
             .await?;
@@ -105,7 +101,7 @@ impl CRUD for User {
 
     async fn delete(key: Self::KeyType, pool: &PgPool) -> Result<Status> {
         let mut tx = pool.begin().await?;
-        let rows = sqlx::query("DELETE FROM users WHERE user_name = $1")
+        let rows = sqlx::query("DELETE FROM device WHERE token = $1")
             .bind(&key)
             .execute(&mut tx)
             .await?;

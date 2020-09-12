@@ -1,7 +1,7 @@
 use actix_web::{delete, get, post, put, web, Responder};
 use sqlx::PgPool;
 use crate::user::users::model::User;
-use crate::curd::{CRUD, deal_result};
+use crate::crud::{CRUD, deal_result};
 
 #[post("/user/create")]
 async fn create(new: web::Json<User>, db_pool: web::Data<PgPool>) -> impl Responder {

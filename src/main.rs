@@ -8,8 +8,9 @@ use actix_web::{App, HttpServer};
 use sqlx::PgPool;
 use anyhow::Result;
 
-mod curd;
+mod crud;
 mod user;
+mod console;
 
 #[actix_rt::main]
 async fn main() -> Result<()> {
@@ -27,6 +28,7 @@ async fn main() -> Result<()> {
             .configure(user::users::routes::init)
             .configure(user::active_code::routes::init)
             .configure(user::check_code::routes::init)
+            .configure(console::device::routes::init)
     });
 
     server = match listenfd.take_tcp_listener(0)? {

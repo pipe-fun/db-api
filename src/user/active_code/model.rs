@@ -4,7 +4,7 @@ use futures::future::{ready, Ready};
 use sqlx::{PgPool, FromRow};
 use anyhow::Result;
 use async_trait::async_trait;
-use crate::curd::{CRUD, Status};
+use crate::crud::{CRUD, Status};
 
 #[derive(Serialize, Deserialize, FromRow)]
 pub struct ActiveCode {
@@ -46,7 +46,7 @@ impl CRUD for ActiveCode {
     }
 
     async fn read(pool: &PgPool) -> Result<Vec<Self>> {
-        let mut users = vec![];
+        let mut data = vec![];
 
         let recs = sqlx::query!(
             r#"
@@ -57,13 +57,13 @@ impl CRUD for ActiveCode {
             .await?;
 
         for rec in recs {
-            users.push(ActiveCode {
+            data.push(ActiveCode {
                 code: rec.code,
                 owner: rec.owner
             });
         }
 
-        Ok(users)
+        Ok(data)
     }
 
     async fn read_by_key(key: Self::KeyType, pool: &PgPool) -> Result<Self> {
