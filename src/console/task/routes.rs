@@ -16,7 +16,7 @@ async fn read(db_pool: web::Data<PgPool>) -> impl Responder {
 }
 
 #[get("/task/read_by_code/{id}")]
-async fn read_by_name(id: web::Path<i32>, db_pool: web::Data<PgPool>) -> impl Responder {
+async fn read_by_id(id: web::Path<i32>, db_pool: web::Data<PgPool>) -> impl Responder {
     let result = Task::read_by_key(id.into_inner(), db_pool.get_ref()).await;
     deal_result(result)
 }
@@ -36,7 +36,7 @@ async fn delete(id: web::Path<i32>, db_pool: web::Data<PgPool>) -> impl Responde
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(create);
     cfg.service(read);
-    cfg.service(read_by_name);
+    cfg.service(read_by_id);
     cfg.service(update);
     cfg.service(delete);
 }

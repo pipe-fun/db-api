@@ -16,7 +16,7 @@ async fn read(db_pool: web::Data<PgPool>) -> impl Responder {
 }
 
 #[get("/device/read_by_code/{token}")]
-async fn read_by_name(token: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
+async fn read_by_token(token: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
     let result = Device::read_by_key(token.into_inner(), db_pool.get_ref()).await;
     deal_result(result)
 }
@@ -36,7 +36,7 @@ async fn delete(token: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Re
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(create);
     cfg.service(read);
-    cfg.service(read_by_name);
+    cfg.service(read_by_token);
     cfg.service(update);
     cfg.service(delete);
 }

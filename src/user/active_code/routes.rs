@@ -16,7 +16,7 @@ async fn read(db_pool: web::Data<PgPool>) -> impl Responder {
 }
 
 #[get("/active_code/read_by_code/{code}")]
-async fn read_by_name(code: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
+async fn read_by_code(code: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
     let result = ActiveCode::read_by_key(code.into_inner(), db_pool.get_ref()).await;
     deal_result(result)
 }
@@ -30,6 +30,6 @@ async fn delete(code: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Res
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(create);
     cfg.service(read);
-    cfg.service(read_by_name);
+    cfg.service(read_by_code);
     cfg.service(delete);
 }
