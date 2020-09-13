@@ -35,8 +35,8 @@ async fn main() -> Result<()> {
     server = match listenfd.take_tcp_listener(0)? {
         Some(listener) => server.listen(listener)?,
         None => {
-            let host = env::var("HOST").expect("HOST is not set in .env file");
-            let port = env::var("PORT").expect("PORT is not set in .env file");
+            let host = env::var("DB_API_HOST").expect("DB_API_HOST is not set in .env file");
+            let port = env::var("DB_API_PORT").expect("DB_API_PORT is not set in .env file");
             server.bind(format!("{}:{}", host, port))?
         }
     };
