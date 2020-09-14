@@ -7,7 +7,7 @@
 * 设备的CRUD
 * 任务的CRUD
 
-## 用啥写的
+## 实现方式
 * Rust + Actix-Web + Sqlx
 
 ## 注意事项
