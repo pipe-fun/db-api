@@ -10,5 +10,8 @@
 ## 实现方式
 * Rust + Actix-Web + Sqlx
 
+## 数据库平台
+* PostgreSQL
+
 ## 注意事项
 * API使用没有任何验证方式，请勿暴露地址
